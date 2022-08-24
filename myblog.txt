@@ -1,0 +1,97 @@
+---------------------------- 
+
+컴포넌트 나누기 끝
+파일 설치 목록
+
+---------------------------- 
+
+build
+
+---------------------------- 
+
+socket.io
+socket.io-client (소켓통신할 때 설치)
+axios (백엔드 연결할 때 설치)
+immer (리덕스 사가 불변성 지킬 떄 설치)
+dayjs (게시물 시간을 위해 설치)
+redux (초기설치)
+redux-saga (초기설치)
+@reduxjs/toolkit
+shortid (리덕스에서 더미데이터 생성시 설치)
+
+styled-components(초기설치)
+react-router-dom (초기설치)
+dotenv (초기설치)
+
+craco (초기설치)
+craco-alias (초기설치)
+
+---------------------------- 설치프로그램
+
+dev
+
+redux-devtools-extension (초기설치)
+cross-env (초기설치) -- 라는 것도 있다면서 설명할 것
+redux-logger (초기설치))
+@faker-js/faker(더미데이터 만들 떄 설치)
+prop-types (초기 설치)
+eslint (초기설치)
+eslint-plugin-react  (초기설치)
+eslint-plugin-prettier  (초기설치)
+eslint-config-prettier  (초기설치)
+prettier  (초기설치)
+
+---------------------------- 
+
+redux란?
+
+미들웨어란?
+
+redux-middleware란?
+
+
+---------------------------- 
+
+dotenv란?
+
+리엑트 배포용과 개발용에 관해 환경변수를 설정하여 개발 시에만 필요한 데이터나 실행문을 실행 시킬 수 있음
+.env를 사용하지 않는다면 리엑트에서는 기본적으로
+
+process.env.NODE_ENV가 자동으로 내장되어있어
+build시에는 production으로
+start시에는 development로 설정되어있다
+
+이러한 방법은 개발과정에서 build를 하지 않으면 사용자 환경에서의 테스트를 진행할 수 없으므로
+이번에는 .env를 사용
+
+그러나, 해당 부분을 로그나 디버깅용으로 많이 사용하기 때문에
+기존 내장 객체만을 사용하더라도 build 시 다른 점이 있는지 없는지만
+파악해도 충분
+
+cross-env란?
+
+명령어를 실행하는 문장에서 운영체제나 플랫폼마다 env의 환경변수를 사용하는 법이 다른데
+cross-env를 사용하면 상관없이 동일한 방법으로 .env의 변수를 주입할 수 있음
+
+eslint란?
+
+문법
+
+prettier란?
+
+포맷터
+
+craco란?
+
+절대경로 설정
+
+---------------------------- 
+
+npm i golobal
+관리자권한 sudo
+
+---------------------------- 
+
+react-error-boundery ( fallbackComponent )
+suspense 적용하기
+connected-react-router
