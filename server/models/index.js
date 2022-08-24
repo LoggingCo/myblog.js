@@ -9,13 +9,13 @@ import read from './chat/read.js';
 import chat from './chat/chat.js';
 import room from './chat/room.js';
 import blog from './blog/blog.js';
-import DBconfig from '../config/dbconfing.js';
+import config from '../config/config.js';
 
 const env = process.env.NODE_ENV || 'development';
-const config = DBconfig[env];
+const dbConfig = config[env];
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 
 db.Post = post;
 db.Comment = comment;

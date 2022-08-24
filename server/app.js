@@ -5,7 +5,7 @@ import hpp from 'hpp';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import db from './entity/index.js';
+import db from './models/index.js';
 
 // config
 const app = express();
