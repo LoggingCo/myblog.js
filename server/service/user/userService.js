@@ -61,5 +61,7 @@ export class UserService {
         })(req, res, next);
     }
 
-    async sign(req, res, next) {}
+    async sign(req, res, next) {
+        console.log(req, res, next);
+    }
 }
