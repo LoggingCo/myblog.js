@@ -49,6 +49,13 @@ class User extends Model {
                     defaultValue: 0,
                     comment: '이메일 인증 여부',
                 },
+                token: {
+                    type: Sequelize.UUID,
+                    defaultValue: Sequelize.UUIDV4,
+                    allowNull: false,
+                    unique: true,
+                    comment: '인증 고유번호',
+                },
             },
             {
                 modelName: 'User',
@@ -65,7 +72,6 @@ class User extends Model {
     }
     static associate(db) {
         //1:1
-        db.User.hasOne(db.Auth);
         db.User.hasOne(db.Read);
 
         //1:N

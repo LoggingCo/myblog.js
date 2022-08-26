@@ -6,9 +6,13 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import db from './models/index.js';
+import passport from 'passport';
+import passportConfig from './passport/index.js';
+import user from './routes/user/user.js';
 
 // config
 const app = express();
+passportConfig();
 dotenv.config();
 
 // sequelize
@@ -45,8 +49,17 @@ if (process.env.NODE_ENV === 'production') {
         }),
     );
 }
+// body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-//express
+// passport
+app.use(passport.initialize());
+
+// routes
+app.use('/user', user);
+
+// server
 app.set('port', 9000);
 app.listen(app.get('port'), () => {
     console.log(`${app.get('port')}번으로 서버 실행 중`, process.env.NODE_ENV);
