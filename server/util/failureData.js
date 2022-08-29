@@ -1,6 +1,6 @@
 export const FailureData = (messaga) => {
     return {
-        messaga: 'failure',
+        message: 'failure',
         error: messaga,
     };
 };

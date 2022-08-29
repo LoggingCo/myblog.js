@@ -37,7 +37,7 @@ class Post extends Model {
         });
 
         db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
-        db.Post.belongsToMany(db.User, { through: 'Like', as: 'likePost' });
+        db.Post.belongsToMany(db.User, { through: 'Like', as: 'likeUser' });
     }
 }
 export default Post;

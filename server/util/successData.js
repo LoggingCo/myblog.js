@@ -1,12 +1,12 @@
 export const SuccessData = (data) => {
     if (data) {
         return {
-            messaga: 'success',
+            message: 'success',
             data: data,
         };
     } else {
         return {
-            messaga: 'success',
+            message: 'success',
         };
     }
 };

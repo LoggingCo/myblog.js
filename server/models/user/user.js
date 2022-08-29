@@ -25,22 +25,23 @@ class User extends Model {
                     allowNull: false,
                     comment: '전화번호',
                 },
+                img: {
+                    type: Sequelize.STRING(100),
+                    comment: '프로필 이미지',
+                },
                 smsFlag: {
                     type: Sequelize.INTEGER,
                     allowNull: false,
-                    defaultValue: 0,
                     comment: '문자 홍보 동의 여부',
                 },
                 acceptFlag: {
                     type: Sequelize.INTEGER,
                     allowNull: false,
-                    defaultValue: 0,
                     comment: '개인정보 보관 동의 여부',
                 },
                 promtFlag: {
                     type: Sequelize.INTEGER,
                     allowNull: false,
-                    defaultValue: 0,
                     comment: '홍보 이용 동의 여부',
                 },
                 emailFlag: {
@@ -51,8 +52,6 @@ class User extends Model {
                 },
                 token: {
                     type: Sequelize.UUID,
-                    defaultValue: Sequelize.UUIDV4,
-                    allowNull: false,
                     unique: true,
                     comment: '인증 고유번호',
                 },
@@ -73,13 +72,14 @@ class User extends Model {
     static associate(db) {
         //1:1
         db.User.hasOne(db.Read);
+        db.User.hasOne(db.Blog);
 
         //1:N
         db.User.hasMany(db.Post);
         db.User.hasMany(db.Comment);
         db.User.hasMany(db.Chat);
 
-        db.User.belongsToMany(db.Post, { through: 'Like', as: 'likeUser' });
+        db.User.belongsToMany(db.Post, { through: 'Like', as: 'likePost' });
         db.User.belongsToMany(db.User, {
             through: 'Follow',
             as: 'follower',

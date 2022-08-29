@@ -3,12 +3,15 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import User from '../models/user/user.js';
 import { FailureData } from '../util/failureData.js';
 
+const JwtStrategy = Strategy;
+
 const JwtConfing = {
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
     secretOrKey: process.env.SECRET_JWT_TOKEN_KEY,
 };
 
 const JwtVerify = async (jwtPayload, done) => {
+    console.log(jwtPayload);
     try {
         const user = await User.findOne({ where: { id: jwtPayload.id } });
         if (user) {
@@ -23,5 +26,5 @@ const JwtVerify = async (jwtPayload, done) => {
 };
 
 export default () => {
-    passport.use('jwt', new Strategy(JwtConfing, JwtVerify));
+    passport.use('jwt', new JwtStrategy(JwtConfing, JwtVerify));
 };

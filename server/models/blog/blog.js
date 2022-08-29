@@ -7,7 +7,6 @@ class Blog extends Model {
                 blogcode: {
                     type: Sequelize.UUID,
                     defaultValue: Sequelize.UUIDV4,
-                    allowNull: false,
                     unique: true,
                     comment: '블로그 고유번호',
                 },
@@ -26,7 +25,7 @@ class Blog extends Model {
         );
     }
     static associate(db) {
-        db.Blog.belongsTo(db.User); //x
+        db.Blog.belongsTo(db.User);
     }
 }
 export default Blog;
