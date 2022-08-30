@@ -84,7 +84,7 @@ export class PostService {
     }
 
     // my follower post read
-    static async read(req, res, next) {
+    static async readMain(req, res, next) {
         try {
             const user = await User.findOne({ where: { id: req.user.id } });
             const where = {};
@@ -232,8 +232,67 @@ export class PostService {
     }
 
     // post update
-    static async update(req, res, next) {}
+    static async update(req, res, next) {
+        try {
+            console.log(req);
+            const hashtags = req.body.content.match(/#[^\s#]+/g);
+            await Post.update(
+                {
+                    content: req.body.content,
+                },
+                {
+                    where: {
+                        id: req.params.postId,
+                        UserId: req.user.id,
+                    },
+                },
+            );
+
+            const post = await Post.findOne({ where: { id: req.params.postId } });
+            if (hashtags) {
+                const result = await Promise.all(
+                    hashtags.map((tag) =>
+                        Hashtag.findOrCreate({
+                            where: { name: tag.slice(1).toLowerCase() },
+                        }),
+                    ),
+                );
+                await post.setHashtags(result.map((v) => v[0]));
+            }
+
+            const files = [];
+            let editPost = { PostId: parseInt(req.params.postId, 10), content: req.body.content };
+
+            if (req.files && req.files.length > 0) {
+                await Image.destroy({ where: { PostId: req.params.postId } });
+                if (Array.isArray(req.files)) {
+                    const images = await Promise.all(
+                        req.files.map((image) => Image.create({ src: image.filename })),
+                    );
+                    req.files.map((image) => files.push({ src: image.filename }));
+                    await post.addImages(images);
+                } else {
+                    const image = await Image.create({ src: req.files[0].filename });
+                    await post.addImages(image);
+                    files.push({ src: req.files[0].filename });
+                }
+                editPost.Image = files;
+            }
+            res.status(200).json(SuccessData(editPost));
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    }
 
     // post delete
-    static async delete(req, res, next) {}
+    static async delete(req, res, next) {
+        try {
+            await Post.destroy({ where: { id: req.params.postId, UserId: req.user.id } });
+            res.status(200).json(SuccessData());
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    }
 }

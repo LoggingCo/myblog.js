@@ -1,7 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 
-export class PostMiddle {
+export class ImageMiddle {
     static upload = multer({
         storage: multer.diskStorage({
             destination(req, file, done) {
@@ -15,4 +15,6 @@ export class PostMiddle {
         }),
         limits: { fileSize: 20 * 1024 * 1024 },
     });
+
+    static uploadPorifle = multer({});
 }
