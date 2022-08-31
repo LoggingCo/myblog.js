@@ -1,5 +1,5 @@
 import express from 'express';
-import { ImageMiddle, PostMiddle } from '../../middleware/post/imageMiddle';
+import { ImageMiddle } from '../../middleware/post/imageMiddle';
 import { UserMiddleware } from '../../middleware/user/userMiddle';
 import { PostService } from '../../service/post/postService';
 const router = express.Router();
@@ -8,7 +8,7 @@ router.post(
     '/',
     UserMiddleware.jwtAuth,
     UserMiddleware.isLoggedIn,
-    ImageMiddle.upload.array('image'),
+    ImageMiddle.uploadPost.array('image'),
     PostService.create,
 );
 
@@ -18,7 +18,7 @@ router.get('/:blogCode', PostService.readBlog);
 router.put(
     '/:postId',
     UserMiddleware.jwtAuth,
-    ImageMiddle.upload.array('image'),
+    ImageMiddle.uploadPost.array('image'),
     UserMiddleware.isLoggedIn,
     PostService.update,
 );

@@ -112,8 +112,4 @@ export class UserService {
             res.status(201).json(SuccessData());
         });
     }
-
-    // profile img update
-
-    // profile img delete
 }

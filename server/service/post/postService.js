@@ -264,7 +264,6 @@ export class PostService {
             let editPost = { PostId: parseInt(req.params.postId, 10), content: req.body.content };
 
             if (req.files && req.files.length > 0) {
-                await Image.destroy({ where: { PostId: req.params.postId } });
                 if (Array.isArray(req.files)) {
                     const images = await Promise.all(
                         req.files.map((image) => Image.create({ src: image.filename })),
