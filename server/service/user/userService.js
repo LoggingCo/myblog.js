@@ -7,6 +7,7 @@ import Blog from '../../models/blog/blog.js';
 import { FailureData } from '../../util/failureData.js';
 import { SuccessData } from '../../util/successData.js';
 import dotenv from 'dotenv';
+import Follow from '../../models/blog/follow.js';
 dotenv.config();
 
 export class UserService {
@@ -86,12 +87,15 @@ export class UserService {
                 acceptFlag: req.body.acceptFlag,
             });
             const user = await User.findOne({ where: { email: req.body.email } });
-            await user.addFollowing(user.id);
+            await Follow.create({
+                followerId: user.id,
+                followingId: user.id,
+            });
             await Blog.create({
                 UserId: user.id,
             });
 
-            res.status(201).json(SuccessData());
+            res.status(201).json(SuccessData('축하드립니다. 회원가입에 성공하셨습니다'));
         } catch (err) {
             console.error(err);
             next(err);
@@ -109,7 +113,41 @@ export class UserService {
             req.session.destroy();
             res.clearCookie('refresh');
             res.clearCookie('connect.sid');
-            res.status(201).json(SuccessData());
+            res.status(201).json(SuccessData('로그아웃 되었습니다'));
         });
+    }
+
+    // profile image update
+    static async updateProfile(req, res, next) {
+        try {
+            console.log(req.user.id);
+            console.log(req.files);
+            await User.update(
+                {
+                    img: req.files[0].filename,
+                },
+                { where: { id: req.user.id } },
+            );
+            res.status(200).json(SuccessData({ src: req.files[0].filename }));
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    }
+
+    // profile image delete
+    static async deleteProfile(req, res, next) {
+        try {
+            await User.update(
+                {
+                    img: null,
+                },
+                { where: { id: req.user.id } },
+            );
+            res.status(200).json(SuccessData());
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
     }
 }

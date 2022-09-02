@@ -19,7 +19,7 @@ class Hashtag extends Model {
         );
     }
     static associate(db) {
-        db.Hashtag.belongsToMany(db.Post, { through: 'PostHashtag' });
+        db.Hashtag.hasMany(db.PostHashtag);
     }
 }
 export default Hashtag;

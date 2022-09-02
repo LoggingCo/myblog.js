@@ -15,6 +15,12 @@ import passportConfig from './passport/index.js';
 // import route
 import user from './routes/user/user.js';
 import post from './routes/post/post.js';
+import image from './routes/post/image.js';
+import cment from './routes/post/comment.js';
+import room from './routes/chat/room.js';
+// swagger
+import swaggerUi from 'swagger-ui-express';
+import swaggerFile from './swagger-output.json';
 
 // config
 const app = express();
@@ -82,6 +88,12 @@ app.use(passport.session());
 // routes
 app.use('/user', user);
 app.use('/post', post);
+app.use('/image', image);
+app.use('/comment', cment);
+app.use('/room', room);
+
+// swagger
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // server
 app.set('port', 9000);

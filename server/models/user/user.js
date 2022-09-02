@@ -77,30 +77,9 @@ class User extends Model {
         //1:N
         db.User.hasMany(db.Post);
         db.User.hasMany(db.Comment);
-        db.User.hasMany(db.Chat);
-
-        db.User.belongsToMany(db.Post, { through: 'Like', as: 'likePost' });
-        db.User.belongsToMany(db.User, {
-            through: 'Follow',
-            as: 'follower',
-            foreignKey: 'followerId',
-        });
-        db.User.belongsToMany(db.User, {
-            through: 'Follow',
-            as: 'following',
-            foreignKey: 'followingId',
-        });
-        db.User.belongsToMany(db.User, {
-            through: 'Ben',
-            as: 'benUser',
-            foreignKey: 'benUserId',
-        });
-        db.User.belongsToMany(db.User, {
-            through: 'Ben',
-            as: 'offerUser',
-            foreignKey: 'offerUserId',
-        });
-        db.User.belongsToMany(db.Room, { through: 'roomUser', as: 'JoinUser' });
+        db.User.hasMany(db.Ben);
+        db.User.hasMany(db.Follow, { as: 'following', foreignKey: 'followingId' });
+        db.User.hasMany(db.Follow, { as: 'follower', foreignKey: 'followerId' });
     }
 }
 export default User;

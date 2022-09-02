@@ -4,7 +4,7 @@ class Room extends Model {
     static init(sequelize) {
         return super.init(
             {
-                roomNumber: {
+                roomCode: {
                     type: Sequelize.STRING(200),
                     allowNull: false,
                     unique: true,
@@ -33,7 +33,7 @@ class Room extends Model {
     static associate(db) {
         db.Room.hasOne(db.Read);
         db.Room.hasMany(db.Chat);
-        db.Room.belongsToMany(db.User, { through: 'roomUser', as: 'roomIdx' });
+        db.Room.belongsToMany(db.User, { through: 'roomUser', as: 'userIdx' });
     }
 }
 export default Room;

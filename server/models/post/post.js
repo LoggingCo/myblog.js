@@ -27,17 +27,13 @@ class Post extends Model {
         // source
         db.Post.hasMany(db.Comment);
         db.Post.hasMany(db.Image);
+        db.Post.hasMany(db.PostHashtag);
+        db.Post.hasMany(db.Like);
 
         // taget
         db.Post.belongsTo(db.User, {
             onDelete: 'CASCADE',
         });
-        db.Post.belongsTo(db.User, {
-            onDelete: 'CASCADE',
-        });
-
-        db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
-        db.Post.belongsToMany(db.User, { through: 'Like', as: 'likeUser' });
     }
 }
 export default Post;

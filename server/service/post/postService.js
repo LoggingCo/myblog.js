@@ -1,9 +1,12 @@
 import { Op } from 'sequelize';
 import Blog from '../../models/blog/blog';
+import Follow from '../../models/blog/follow';
 import Comment from '../../models/post/comment';
 import Hashtag from '../../models/post/hastag';
 import Image from '../../models/post/image';
+import Like from '../../models/post/like';
 import Post from '../../models/post/post';
+import PostHashtag from '../../models/post/postHashtag';
 import User from '../../models/user/user';
 import { FailureData } from '../../util/failureData';
 import { SuccessData } from '../../util/successData';
@@ -22,13 +25,16 @@ export class PostService {
             // create hashtags
             if (hashtags) {
                 const result = await Promise.all(
-                    hashtags.map((tag) =>
-                        Hashtag.findOrCreate({
+                    hashtags.map(async (tag) => {
+                        const hash = await Hashtag.findOrCreate({
                             where: { name: tag.slice(1).toLowerCase() },
-                        }),
-                    ),
+                        });
+                        await PostHashtag.create({
+                            HashtagId: hash[0].id,
+                            PostId: post.id,
+                        });
+                    }),
                 );
-                await post.addHashtags(result.map((v) => v[0]));
             }
             // create images
             if (req.files) {
@@ -69,17 +75,23 @@ export class PostService {
                         include: [{ model: Blog, attributes: ['id'] }],
                     },
                     {
-                        model: User,
-                        as: 'likeUser',
+                        model: Like,
                         attributes: ['id'],
+                        include: [
+                            {
+                                model: User,
+                                attributes: ['id', 'nickName', 'img'],
+                                include: [{ model: Blog, attributes: ['id'] }],
+                            },
+                        ],
                     },
                 ],
             });
             res.status(201).json(SuccessData(fullPost));
         } catch (err) {
             console.error(err);
-            next(err);
             res.status(403).json(FailureData());
+            next(err);
         }
     }
 
@@ -91,41 +103,59 @@ export class PostService {
             if (parseInt(req.query.lastId, 10)) {
                 where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
             }
-            const followers = await user.getFollowing({
-                where,
+
+            const followers = await Follow.findAll({
+                where: { followerId: req.user.id },
                 attributes: [],
-                order: [[Post, 'createdAt', 'DESC']],
                 include: [
                     {
-                        model: Post,
+                        model: User,
+                        as: 'following',
+                        attributes: ['id', 'nickName', 'img'],
                         include: [
+                            { model: Blog, attributes: ['id'] },
                             {
-                                model: User,
-                                attributes: ['nickName', 'img'],
-                                include: [{ model: Blog, attributes: ['blogcode'] }],
-                            },
-                            { model: Image, attributes: ['src'] },
-                            {
-                                model: Comment,
+                                model: Post,
                                 include: [
                                     {
+                                        model: Image,
+                                        attributes: ['src'],
+                                    },
+                                    {
+                                        model: Comment,
+                                        include: [
+                                            {
+                                                model: User,
+                                                attributes: ['id', 'nickName', 'img'],
+                                                include: [
+                                                    { model: Blog, attributes: ['blogcode'] },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    {
                                         model: User,
-                                        attributes: ['nickName', 'img'],
-                                        include: [{ model: Blog, attributes: ['blogcode'] }],
+                                        attributes: ['id', 'nickName', 'img'],
+                                        include: [{ model: Blog, attributes: ['id'] }],
+                                    },
+                                    {
+                                        model: Like,
+                                        attributes: ['id'],
+                                        include: [
+                                            {
+                                                model: User,
+                                                attributes: ['id', 'nickName', 'img'],
+                                                include: [{ model: Blog, attributes: ['id'] }],
+                                            },
+                                        ],
                                     },
                                 ],
-                            },
-                            {
-                                model: User,
-                                as: 'likeUser',
-                                attributes: ['nickName', 'img'],
-                                include: [{ model: Blog, attributes: ['blogcode'] }],
                             },
                         ],
                     },
                 ],
             });
-            res.status(201).json(SuccessData(followers[0].Posts));
+            res.status(201).json(SuccessData(followers));
         } catch (err) {
             console.log(err);
             next(err);
@@ -141,6 +171,7 @@ export class PostService {
             }
             const fullPost = await Post.findAll({
                 order: [['createdAt', 'DESC']],
+                attributes: [],
                 where,
                 include: [
                     {
@@ -160,10 +191,15 @@ export class PostService {
                         ],
                     },
                     {
-                        model: User,
-                        as: 'likeUser',
-                        attributes: ['nickName', 'img'],
-                        include: [{ model: Blog, attributes: ['blogcode'] }],
+                        model: Like,
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: User,
+                                attributes: ['id', 'nickName', 'img'],
+                                include: [{ model: Blog, attributes: ['id'] }],
+                            },
+                        ],
                     },
                 ],
             });
@@ -242,13 +278,13 @@ export class PostService {
                 },
                 {
                     where: {
-                        id: req.params.postId,
+                        id: parseInt(req.params.postId, 10),
                         UserId: req.user.id,
                     },
                 },
             );
 
-            const post = await Post.findOne({ where: { id: req.params.postId } });
+            const post = await Post.findOne({ where: { id: parseInt(req.params.postId, 10) } });
             if (hashtags) {
                 const result = await Promise.all(
                     hashtags.map((tag) =>
@@ -287,8 +323,14 @@ export class PostService {
     // post delete
     static async delete(req, res, next) {
         try {
-            await Post.destroy({ where: { id: req.params.postId, UserId: req.user.id } });
-            res.status(200).json(SuccessData());
+            const post = await Post.findOne({ where: { id: parseInt(req.params.postId, 10) } });
+            if (req.user.id === post.UserId) {
+                await Post.destroy({
+                    where: { id: parseInt(req.params.postId, 10), UserId: req.user.id },
+                });
+                res.status(200).json(SuccessData(parseInt(req.params.postId, 10)));
+            }
+            res.status(403).json(FailureData('본인의 게시글만 삭제할 수 있습니다'));
         } catch (err) {
             console.error(err);
             next(err);
