@@ -18,8 +18,8 @@ class Ben extends Model {
         );
     }
     static associate(db) {
-        db.Ben.belongsTo(db.User, { as: 'ben' });
-        db.Ben.belongsTo(db.User);
+        db.Ben.belongsTo(db.User, { as: 'ben', foreignKey: 'BenId' });
+        db.Ben.belongsTo(db.User, { foreignKey: 'UserId' });
     }
 }
 export default Ben;

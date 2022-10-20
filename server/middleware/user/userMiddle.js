@@ -1,7 +1,7 @@
 import passport from 'passport';
 import dotenv from 'dotenv';
 import { RefreshAuth } from '../../util/refreshAuth';
-import { FailureData } from '../../util/failureData';
+import { FailureData } from '../../util/resultData.js';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../../service/user/userService';
 dotenv.config();

@@ -70,16 +70,22 @@ class User extends Model {
         );
     }
     static associate(db) {
+        // source
         //1:1
         db.User.hasOne(db.Read);
         db.User.hasOne(db.Blog);
 
         //1:N
-        db.User.hasMany(db.Post);
-        db.User.hasMany(db.Comment);
-        db.User.hasMany(db.Ben);
+        db.User.hasMany(db.Post, { foreignKey: 'UserId' });
+        db.User.hasMany(db.Comment, { foreignKey: 'UserId' });
+        db.User.hasMany(db.Ben, { foreignKey: 'UserId' });
+        db.User.hasMany(db.Ben, { foreignKey: 'BenId' });
         db.User.hasMany(db.Follow, { as: 'following', foreignKey: 'followingId' });
         db.User.hasMany(db.Follow, { as: 'follower', foreignKey: 'followerId' });
+        db.User.hasMany(db.Like, { foreignKey: 'UserId' });
+        db.User.hasMany(db.RoomUser, { foreignKey: 'RoomUserId' });
+
+        // target
     }
 }
 export default User;

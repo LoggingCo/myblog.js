@@ -27,7 +27,7 @@ const MyAvatar = ({ userInfo }) => {
         }
     }, []);
 
-    // html
+    // htmlt대표
 
     return (
         <div>

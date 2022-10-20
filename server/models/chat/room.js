@@ -31,9 +31,9 @@ class Room extends Model {
         );
     }
     static associate(db) {
-        db.Room.hasOne(db.Read);
+        db.Room.hasMany(db.Read);
         db.Room.hasMany(db.Chat);
-        db.Room.belongsToMany(db.User, { through: 'roomUser', as: 'userIdx' });
+        db.Room.hasMany(db.RoomUser, { foreignKey: 'RoomId' });
     }
 }
 export default Room;

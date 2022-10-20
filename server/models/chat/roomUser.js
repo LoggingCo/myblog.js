@@ -18,8 +18,8 @@ class RoomUser extends Model {
         );
     }
     static associate(db) {
-        db.RoomUser.belongsTo(db.User);
-        db.RoomUser.belongsTo(db.Room);
+        db.RoomUser.belongsTo(db.User, { foreignKey: 'RoomUserId' });
+        db.RoomUser.belongsTo(db.Room, { foreignKey: 'RoomId' });
     }
 }
 export default RoomUser;

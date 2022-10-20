@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { query } from 'express';
 import { Multer } from '../../middleware/multer';
 import { UserMiddleware } from '../../middleware/user/userMiddle';
 import { PostService } from '../../service/post/postService';

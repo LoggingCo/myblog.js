@@ -23,7 +23,7 @@ class Image extends Model {
         );
     }
     static associate(db) {
-        db.Image.belongsTo(db.Post);
+        db.Image.belongsTo(db.Post, { foreignKey: 'PostId' });
     }
 }
 export default Image;

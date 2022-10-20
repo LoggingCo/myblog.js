@@ -24,8 +24,8 @@ class Comment extends Model {
         );
     }
     static associate(db) {
-        db.Comment.belongsTo(db.User);
-        db.Comment.belongsTo(db.Post);
+        db.Comment.belongsTo(db.User, { foreignKey: 'UserId' });
+        db.Comment.belongsTo(db.Post, { foreignKey: 'PostId' });
     }
 }
 export default Comment;

@@ -29,7 +29,8 @@ function* loadBlog(action) {
         const response = yield call(BlogService.prototype.loadInfo, action.payload);
         yield delay(1000);
         yield put(blogLoadSuccess(response));
-    } catch (err) {}
+    } catch (err) {
+    }
 }
 
 // read list

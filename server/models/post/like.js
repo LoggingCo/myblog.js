@@ -18,8 +18,8 @@ class Like extends Model {
         );
     }
     static associate(db) {
-        db.Like.belongsTo(db.User);
-        db.Like.belongsTo(db.Post);
+        db.Like.belongsTo(db.User, { foreignKey: 'UserId' });
+        db.Like.belongsTo(db.Post, { foreignKey: 'PostId' });
     }
 }
 export default Like;

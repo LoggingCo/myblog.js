@@ -13,15 +13,15 @@ const useObServe = (observTarget, isLoading = false) => {
 
     useEffect(() => {
         if (observTarget.current && !isLoading) {
-            observer = new IntersectionObserver(obsHandler, {
-                rootMargin: '80px',
+            observer.current = new IntersectionObserver(obsHandler, {
+                rootMargin: '80px', 
                 threshold: 1,
             });
-            observer.observe(observTarget.current);
+            observer.current.observe(observTarget.current);
         }
         return () => {
             if (!isLoading) {
-                observTarget.current && observer.unobserve(observTarget.current);
+                observTarget.current && observer.current.unobserve(observTarget.current);
             }
         };
     }, [page, isLoading]);

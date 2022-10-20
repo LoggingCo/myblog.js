@@ -25,14 +25,15 @@ class Post extends Model {
     }
     static associate(db) {
         // source
-        db.Post.hasMany(db.Comment);
-        db.Post.hasMany(db.Image);
-        db.Post.hasMany(db.PostHashtag);
-        db.Post.hasMany(db.Like);
+        db.Post.hasMany(db.Comment, { foreignKey: 'PostId' });
+        db.Post.hasMany(db.Image, { foreignKey: 'PostId' });
+        db.Post.hasMany(db.PostHashtag, { foreignKey: 'PostId' });
+        db.Post.hasMany(db.Like, { foreignKey: 'PostId' });
 
         // taget
         db.Post.belongsTo(db.User, {
             onDelete: 'CASCADE',
+            foreignKey: 'UserId',
         });
     }
 }

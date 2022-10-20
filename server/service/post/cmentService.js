@@ -1,7 +1,7 @@
 import Blog from '../../models/blog/blog';
 import Comment from '../../models/post/comment';
 import User from '../../models/user/user';
-import { SuccessData } from '../../util/successData';
+import { SuccessData } from '../../util/resultData.js';
 
 export class CmentService {
     // cment create
@@ -17,7 +17,7 @@ export class CmentService {
                 include: [
                     {
                         model: User,
-                        attributes: ['id', 'nickName', 'img'],
+                        attributes: ['nickName', 'img'],
                         include: [{ model: Blog, attributes: ['blogcode'] }],
                     },
                 ],

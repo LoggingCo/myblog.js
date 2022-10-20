@@ -8,8 +8,8 @@ import Like from '../../models/post/like';
 import Post from '../../models/post/post';
 import PostHashtag from '../../models/post/postHashtag';
 import User from '../../models/user/user';
-import { FailureData } from '../../util/failureData';
-import { SuccessData } from '../../util/successData';
+import { FailureData } from '../../util/resultData.js';
+import { SuccessData } from '../../util/resultData.js';
 
 export class PostService {
     // post create
@@ -57,22 +57,22 @@ export class PostService {
                 include: [
                     {
                         model: Image,
-                        attributes: ['src'],
+                        attributes: ['id', 'src'],
                     },
                     {
                         model: Comment,
                         include: [
                             {
                                 model: User,
-                                attributes: ['id', 'nickName', 'img'],
+                                attributes: ['nickName', 'img'],
                                 include: [{ model: Blog, attributes: ['blogcode'] }],
                             },
                         ],
                     },
                     {
                         model: User,
-                        attributes: ['id', 'nickName', 'img'],
-                        include: [{ model: Blog, attributes: ['id'] }],
+                        attributes: ['nickName', 'img'],
+                        include: [{ model: Blog, attributes: ['blogcode'] }],
                     },
                     {
                         model: Like,
@@ -80,7 +80,7 @@ export class PostService {
                         include: [
                             {
                                 model: User,
-                                attributes: ['id', 'nickName', 'img'],
+                                attributes: ['nickName', 'img'],
                                 include: [{ model: Blog, attributes: ['id'] }],
                             },
                         ],
@@ -95,91 +95,39 @@ export class PostService {
         }
     }
 
-    // my follower post read
+    // my post read
     static async readMain(req, res, next) {
         try {
-            const user = await User.findOne({ where: { id: req.user.id } });
+            // 마지막 postId값 검색
             const where = {};
             if (parseInt(req.query.lastId, 10)) {
                 where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
             }
 
-            const followers = await Follow.findAll({
+            // 내가 팔로우하고 있는 사람들 목록 배열로 검색
+            const follow = await Follow.findAll({
                 where: { followerId: req.user.id },
-                attributes: [],
-                include: [
-                    {
-                        model: User,
-                        as: 'following',
-                        attributes: ['id', 'nickName', 'img'],
-                        include: [
-                            { model: Blog, attributes: ['id'] },
-                            {
-                                model: Post,
-                                include: [
-                                    {
-                                        model: Image,
-                                        attributes: ['src'],
-                                    },
-                                    {
-                                        model: Comment,
-                                        include: [
-                                            {
-                                                model: User,
-                                                attributes: ['id', 'nickName', 'img'],
-                                                include: [
-                                                    { model: Blog, attributes: ['blogcode'] },
-                                                ],
-                                            },
-                                        ],
-                                    },
-                                    {
-                                        model: User,
-                                        attributes: ['id', 'nickName', 'img'],
-                                        include: [{ model: Blog, attributes: ['id'] }],
-                                    },
-                                    {
-                                        model: Like,
-                                        attributes: ['id'],
-                                        include: [
-                                            {
-                                                model: User,
-                                                attributes: ['id', 'nickName', 'img'],
-                                                include: [{ model: Blog, attributes: ['id'] }],
-                                            },
-                                        ],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
             });
-            res.status(201).json(SuccessData(followers));
-        } catch (err) {
-            console.log(err);
-            next(err);
-        }
-    }
 
-    // all post read
-    static async readAll(req, res, next) {
-        try {
-            const where = {};
-            if (parseInt(req.query.lastId, 10)) {
-                where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+            const followId = [];
+            // 팔로우 id값 배열로 변환
+            for await (const user of follow) {
+                followId.push(parseInt(user.id, 10));
             }
+
+            // 배열로 반환 된 것으로 검색
             const fullPost = await Post.findAll({
+                where: {
+                    id: { [Op.lt]: parseInt(req.query.lastId, 10) },
+                    UserId: { [Op.in]: followId },
+                },
+                limit: 10,
                 order: [['createdAt', 'DESC']],
-                attributes: [],
-                where,
                 include: [
                     {
-                        model: User,
-                        attributes: ['nickName', 'img'],
-                        include: [{ model: Blog, attributes: ['blogcode'] }],
+                        model: Image,
+                        attributes: ['id', 'src'],
                     },
-                    { model: Image, attributes: ['src'] },
                     {
                         model: Comment,
                         include: [
@@ -191,12 +139,17 @@ export class PostService {
                         ],
                     },
                     {
+                        model: User,
+                        attributes: ['nickName', 'img'],
+                        include: [{ model: Blog, attributes: ['blogcode'] }],
+                    },
+                    {
                         model: Like,
                         attributes: ['id'],
                         include: [
                             {
                                 model: User,
-                                attributes: ['id', 'nickName', 'img'],
+                                attributes: ['nickName', 'img'],
                                 include: [{ model: Blog, attributes: ['id'] }],
                             },
                         ],
@@ -205,12 +158,12 @@ export class PostService {
             });
             res.status(201).json(SuccessData(fullPost));
         } catch (err) {
-            console.error(err);
+            console.log(err);
             next(err);
         }
     }
 
-    // my post read
+    // blog post read
     static async readBlog(req, res, next) {
         try {
             const wherePost = {};
@@ -235,7 +188,7 @@ export class PostService {
                                         attributes: ['nickName', 'img'],
                                         include: [{ model: Blog, attributes: ['blogcode'] }],
                                     },
-                                    { model: Image, attributes: ['src'] },
+                                    { model: Image, attributes: ['id', 'src'] },
                                     {
                                         model: Comment,
                                         include: [
@@ -249,10 +202,15 @@ export class PostService {
                                         ],
                                     },
                                     {
-                                        model: User,
-                                        as: 'likeUser',
-                                        attributes: ['nickName', 'img'],
-                                        include: [{ model: Blog, attributes: ['blogcode'] }],
+                                        model: Like,
+                                        attributes: ['id'],
+                                        include: [
+                                            {
+                                                model: User,
+                                                attributes: ['nickName', 'img'],
+                                                include: [{ model: Blog, attributes: ['id'] }],
+                                            },
+                                        ],
                                     },
                                 ],
                             },
@@ -336,4 +294,7 @@ export class PostService {
             next(err);
         }
     }
+
+    // like post
+    // unlike post
 }

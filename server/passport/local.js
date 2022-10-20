@@ -2,7 +2,7 @@ import passportLocal from 'passport-local';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
 import User from '../models/user/user.js';
-import { FailureData } from '../util/failureData.js';
+import { FailureData } from '../util/resultData.js';
 
 const LocalStrategy = passportLocal.Strategy;
 

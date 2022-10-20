@@ -1,14 +1,13 @@
 import Image from '../../models/post/image';
 import Post from '../../models/post/post';
-import { FailureData } from '../../util/failureData';
-import { SuccessData } from '../../util/successData';
+import { FailureData } from '../../util/resultData.js';
+import { SuccessData } from '../../util/resultData.js';
 
 export class ImageService {
     // post image delete
     static async deletePost(req, res, next) {
         try {
-            const post = await Post.findOne({ where: { id: parseInt(req.params.imageId, 10) } });
-            console.log(post);
+            const post = await Post.findOne({ where: { id: parseInt(req.params.postId, 10) } });
             if (post.UserId === req.user.id) {
                 await Image.destroy({
                     where: {

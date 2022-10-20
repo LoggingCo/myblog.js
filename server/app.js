@@ -18,9 +18,12 @@ import post from './routes/post/post.js';
 import image from './routes/post/image.js';
 import cment from './routes/post/comment.js';
 import room from './routes/chat/room.js';
+import chat from './routes/chat/chat.js';
 // swagger
 import swaggerUi from 'swagger-ui-express';
 import swaggerFile from './swagger-output.json';
+// import
+import SoketServer from './socket/socket.js';
 
 // config
 const app = express();
@@ -48,7 +51,7 @@ if (process.env.NODE_ENV === 'production') {
     );
     app.use(
         cors({
-            origin: 'http://myblog.com',
+            origin: '*',
             credentials: true,
         }),
     );
@@ -91,12 +94,16 @@ app.use('/post', post);
 app.use('/image', image);
 app.use('/comment', cment);
 app.use('/room', room);
+app.use('/chat', chat);
 
 // swagger
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // server
 app.set('port', 9000);
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
     console.log(`${app.get('port')}번으로 서버 실행 중`, process.env.NODE_ENV);
 });
+
+// socket 연결
+SoketServer(server);

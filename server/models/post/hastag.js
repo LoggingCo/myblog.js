@@ -19,7 +19,7 @@ class Hashtag extends Model {
         );
     }
     static associate(db) {
-        db.Hashtag.hasMany(db.PostHashtag);
+        db.Hashtag.hasMany(db.PostHashtag, { foreignKey: 'PostId' });
     }
 }
 export default Hashtag;

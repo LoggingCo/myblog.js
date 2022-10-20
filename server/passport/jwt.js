@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import User from '../models/user/user.js';
-import { FailureData } from '../util/failureData.js';
+import { FailureData } from '../util/resultData.js';
 
 const JwtStrategy = Strategy;
 
