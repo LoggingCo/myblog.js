@@ -18,12 +18,14 @@
 - sequalize
 - multer
 - socket io
+- passport
 
 
 ## 구현된 기능
 
 - 게시물 CRUD
 - 이미지업로드 CRUD
+- JWT를 활용한 access_token 인증 방식과 refresth token
 - 팔로우, 팔로윙 차단 기능
 - 프로필 이미지 수정
 - socket io를 활용한 Direct message
