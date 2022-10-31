@@ -26,6 +26,12 @@ frontend의 mock data로만 배포되어있습니다.
 - passport
 
 
+## infra
+
+aws ec2
+docker
+netflify
+
 ## 구현된 기능
 
 - 게시물 CRUD
