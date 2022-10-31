@@ -1,7 +1,11 @@
-# myblog.js
-이전에 수업을 위해 만든 강의 자료로 테스트코드, 배포, 컴포넌트 구조, HTTP 통신 등 향후 최신 버전에 맞도록 리펙터링 예정입니다.
+## 배포링크
 
-## ⚙️ skils stack
+https://fancy-profiterole-9b78ae.netlify.app/
+
+'''
+frontend의 mock data로만 배포되어있습니다.
+페이지 접속 후 input에 어떠한 값이든 입력 후 '이메일로 로그인' 버튼을 클릭하면 로그인 됩니다.
+'''
 
 ## FrontEnd
 
