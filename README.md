@@ -3,6 +3,7 @@
 https://fancy-profiterole-9b78ae.netlify.app/
 
 '''
+ec2 free tier 문제로
 frontend의 mock data로만 배포되어있습니다.
 페이지 접속 후 input에 어떠한 값이든 입력 후 '이메일로 로그인' 버튼을 클릭하면 로그인 됩니다.
 '''
